@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { app } from '../../src/firebase';  // named export로 임포트
 
-
-
+const initialUserData = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : {}
 
 const Nav = () => {
   
   const [show, setShow] = useState(false); // 불리언 값 사용
 
+  const [userData, setuserData] = useState(initialUserData);
+
   const [searchValue, setsearchValue] = useState('');
   const navigate = useNavigate();
+
+  const { pathname } = useLocation ();
+
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
   const listener = () => {
     if (window.scrollY > 50) {
@@ -19,6 +27,20 @@ const Nav = () => {
       setShow(false);
     }
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if(!user) {
+        navigate('/');
+      }else if(user && pathname === "/") {
+        navigate('/main');
+      }
+      
+    })
+  
+  }, [auth, navigate])
+  
+
 
   useEffect(() => {
     window.addEventListener("scroll", listener);
@@ -34,6 +56,26 @@ const Nav = () => {
     navigate(`/search?q=${e.target.value}`);
   }
 
+  const handleAuth = () => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log(result);
+      setuserData(result.user);
+      localStorage.setItem('userData', JSON.stringify(result.user));
+    })
+    .catch((error) => {
+      alert(error.message); 
+    })
+  }
+
+  const handleLogOut = () => {
+    signOut(auth).then(() => {
+      setuserData({});
+      localStorage.removeItem('userData');
+    }).catch((error) => {
+      alert(error.message)
+    })
+  }
 
 
 
@@ -47,6 +89,12 @@ const Nav = () => {
         />
       </Logo>
 
+    {pathname === "/" ? (
+      <Login
+        onClick={handleAuth}
+      > 로그인 </Login>
+    ) : 
+    (
     <Input 
       type="text"
       className="nav__input"
@@ -55,15 +103,68 @@ const Nav = () => {
       placeholder="영화를 검색해주세요."
 
     />
+  )
+  }
 
-    <Login>로그인</Login>
-
-
-
-
+  {pathname !== "/" ? 
+  
+  <SignOut>
+    <UserImg src={userData.photoURL} alt={userData.displayName} />
+      <DropDown>
+        <span onClick={handleLogOut}>
+          Sign Out
+        </span>
+      </DropDown>  
+  </SignOut>
+    : 
+    null
+  } 
     </NavWrapper>
   );
 };
+
+const UserImg = styled.img`
+  border-radius: 50px;
+  width: 100%;
+  height: 100%;
+`
+const DropDown = styled.div`
+position: absolute;
+top: 48px;
+right:0px
+back-ground: rgb(19, 19, 19);
+border: 1px solid rgba(151, 151, 151, 0.34);
+border-radius: 4px;
+box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+padding: 10px; 
+font-size: 14px;
+letter-spacing: 3px; 
+width : 100px; 
+opacity: 0;
+`
+
+
+const SignOut = styled.div`
+position: relative;
+height: 48px;
+width: 48px;
+display: flex;
+cursor: pointer;
+align-items: center;
+justify-content: center;
+
+&:hover{
+  ${DropDown} {
+    opacity: 1;
+    transition-duration: 1s;
+
+    }
+}
+`;
+
+
+
+
 
 
 const Input = styled.input`
