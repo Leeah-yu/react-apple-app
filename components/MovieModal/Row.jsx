@@ -40,7 +40,7 @@ const Row = ({title, id, fetchUrl}) => {
   }, [fetchMovieData])
 
   return (
-    <container>
+    <Container>
       <h2>{title}</h2>
 
       <Swiper
@@ -48,8 +48,8 @@ const Row = ({title, id, fetchUrl}) => {
       modules={[Navigation, Pagination, Scrollbar, A11y]}
       breakpoints={{
         1378: {
-          slidesPerView: 6, //한번에 보이는 슬라이드 개수
-          slidesPerGroup: 6, //몇개씩 슬라이드할지 
+          slidesPerView: 5, //한번에 보이는 슬라이드 개수
+          slidesPerGroup: 5, //몇개씩 슬라이드할지 
         },
         998: {
           slidesPerView: 5, //한번에 보이는 슬라이드 개수
@@ -123,12 +123,12 @@ const Row = ({title, id, fetchUrl}) => {
             <MovieModal {...movieSelected} setModalOpen={setModalOpen} />
           ) : null}
 
-    </container>
+    </Container>
   )
 }
 
 
-const container = styled.div`
+const Container = styled.div`
   padding: 0 0 26px
 `
 
@@ -141,7 +141,7 @@ const Wrap = styled.div`
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  transition: all 250ms cubic-bazier(0.25, 0.46, 0.45, 0.94) 0s;
+  transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
   border: 3px solid rgba(249, 249, 249, 0.1);
   img { 
     inset: 0px;

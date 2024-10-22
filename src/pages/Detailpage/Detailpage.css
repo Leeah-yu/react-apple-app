@@ -1,8 +1,13 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 66eadafaec85d64b7c46e58d0cb6c0c4fe568f96
 
 .container {
   background-color: rgb(0, 0, 0);
   max-width: 800px;
   padding: 50px;
+<<<<<<< HEAD
   padding-top: 50px;
   box-sizing: border-box;    
  
@@ -11,10 +16,17 @@
     background-color: #111;   
 
 
+=======
+  padding-top: 100px;
+
+  height: 100vh;            
+  margin: 0;               
+  background-color: #111;   
+>>>>>>> 66eadafaec85d64b7c46e58d0cb6c0c4fe568f96
 }
 
 .detail_img {
-  max-width: 700px;
+  max-width: 800px;
   background-color: #111;
   overflow: hidden;
   border-radius: 30px;
